@@ -43,11 +43,11 @@ From the regression tree, 51.1% of the states have police expenditures being gre
 
 ## Q5 Mean crime rates
 
-Mean crime rates for each group are:
-Expenditure year < 77 and state size < 23 : 72.5
-Expenditure year < 77 and state size > 23 : 97.6
-Expenditure year > 108 : 131
-Expenditure year > 77 but < 108 : 111
+Mean crime rates for each group are:  
+Expenditure year < 77 and state size < 23 : 72.5 offences per million people  
+Expenditure year < 77 and state size > 23 : 97.6 offences per million people  
+Expenditure year > 108 : 131 offences per million people  
+Expenditure year > 77 < 108 : 111 offences per million people  
 
 ## Q6 excluded variables
 
@@ -68,6 +68,45 @@ cor(p.rpart, data10[["CrimeRate"]],method="pearson")
 
 The correlation coefficient is 0.58. 
 
+##Q9 Mean absolute error
 
+```{r}
+MAE <- function(actual, predicted)  {
+  mean(abs(actual - predicted))
+}
 
+MAE(predicted = p.rpart,actual = mydata[["CrimeRate"]])
+```
 
+The mean absolute error for the model is 18.37 offences per million people and given the correlation coefficient of 0.58, I do not think the model was very good at predicting crime rates.
+
+##Q10 Null distribution
+
+```{r}
+crimedata=mydata[["CrimeRate"]]
+
+MAE2 <- function(data,indices)  {
+  d<-data[indices]
+  return(mean(abs(crimedata - d)))
+}
+
+library(boot)
+guesses=boot(data=crimedata, statistic=MAE2, R=1000)
+
+{hist(guesses$t)
+abline(v=mean(guesses$t),col="red")}
+mean(guesses$t)
+```
+
+##Q11 Mean absolute error comparison
+
+The mean absolute error when crime rates are randomly assigned is 32.6 offences per million people which is worse than the mean absolute error of the model. This suggests that the model appears to be better at predicting crime rates than random. 
+
+##Q12 P value
+
+```{r}
+p.value=length(which((guesses$t<0.5198)==T))/1000
+p.value
+```
+
+The p-value is less than 0.05 so the model is significantly better at predicting crime rates than random chance. 
