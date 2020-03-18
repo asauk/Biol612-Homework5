@@ -105,7 +105,7 @@ The mean absolute error when crime rates are randomly assigned is 32.6 offences 
 ##Q12 P value
 
 ```{r}
-p.value=length(which((guesses$t<0.5198)==T))/1000
+p.value=length(which((guesses$t<18.37)==T))/1000
 p.value
 ```
 
